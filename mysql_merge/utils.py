@@ -21,11 +21,14 @@ class MiniLogger(object):
     def __set__(self, k, v):
         if k == "qs":
             qs = v
+
+            if verbose:
+                print(qs)
         setattr(self, k, v)
 
     def log(self, v):
         if verbose:
-            print v
+            print(v)
 
 
 def lists_diff(a, b):
@@ -49,21 +52,21 @@ logger = MiniLogger()
 
 
 def handle_exception(custom_message, exception, connection=None):
-    print ""
-    print "-----------------------------------------------"
-    print custom_message
-    if qs:
-        print "Last query was: "
-        print logger.qs
-    print "The error message is: "
-    print exception
-    print "The traceback is: "
+    print("")
+    print("-----------------------------------------------")
+    print(custom_message)
+    if logger.qs:
+        print("Last query was: ")
+        print(logger.qs)
+    print("The error message is: ")
+    print(exception)
+    print("The traceback is: ")
     traceback.print_tb(sys.exc_info()[2])
-    print ""
+    print("")
     if connection:
-        print "Rollback"
+        print("Rollback")
         connection.rollback()
-    print ""
+    print("")
     sys.exit()
 
 
@@ -185,7 +188,6 @@ def map_fks(db_map, force_input=True):
                 if s_bre:
                     break
 
-            print col_string
             default_mapping[col_string] = "%s.%s" % (parent, parent_col)
             db_map[table_name]['fk_create'][col_name] = {'parent': parent, 'parent_col': parent_col}
             del db_map[table_name]['fk_maybe'][col_name]

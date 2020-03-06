@@ -209,12 +209,10 @@ class Merger(object):
                     self._logger.qs = "UPDATE `%(child)s` c set c.`%(child_col)s`=%(value)s WHERE not exists (select * from `%(parent)s` p where p.`%(parent_col)s`=c.`%(child_col)s` limit 1)" % params
                 try:
                     try:
-                        print(self._logger.qs)
                         cur.execute(self._logger.qs)
                     except (MySQLdb.Warning, MySQLdb.IntegrityError), e:
                         # If nulling failed, let's delete problematic rows
                         self._logger.qs = "DELETE FROM `%(child)s` WHERE not exists (select * from `%(parent)s` p where p.`%(parent_col)s`=`%(child)s`.`%(child_col)s` limit 1)" % params
-                        print(self._logger.qs)
                         cur.execute(self._logger.qs)
                 except Exception, e:
                     handle_exception(
