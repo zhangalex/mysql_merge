@@ -185,6 +185,7 @@ def map_fks(db_map, force_input=True):
                 if s_bre:
                     break
 
+            print col_string
             default_mapping[col_string] = "%s.%s" % (parent, parent_col)
             db_map[table_name]['fk_create'][col_name] = {'parent': parent, 'parent_col': parent_col}
             del db_map[table_name]['fk_maybe'][col_name]

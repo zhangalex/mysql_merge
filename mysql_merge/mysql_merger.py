@@ -49,7 +49,7 @@ class Merger(object):
         db_map = self._source_mapper.map_db()
 
         self._logger.log(" -> 2/2 Re-applying FKs mapping to current database schema - in case execution broke before")
-        map_fks(db_map, False)
+        map_fks(db_map, True)
 
         self._db_map = db_map
 
@@ -203,13 +203,18 @@ class Merger(object):
                     'parent_col': fk_data['parent_col'],
                     'value': mapping[col_name] if mapping.has_key(col_name) else "null"
                 }
-                self._logger.qs = "UPDATE `%(child)s` c set c.`%(child_col)s`=%(value)s WHERE not exists (select * from `%(parent)s` p where p.`%(parent_col)s`=c.`%(child_col)s` limit 1)" % params
+                if params['child'] == params['parent']:
+                    self._logger.qs = "UPDATE `%(child)s` c INNER JOIN `%(parent)s` p ON p.`%(parent_col)s`=c.`%(child_col)s` set c.`%(child_col)s`=%(value)s" % params
+                else:
+                    self._logger.qs = "UPDATE `%(child)s` c set c.`%(child_col)s`=%(value)s WHERE not exists (select * from `%(parent)s` p where p.`%(parent_col)s`=c.`%(child_col)s` limit 1)" % params
                 try:
                     try:
+                        print(self._logger.qs)
                         cur.execute(self._logger.qs)
                     except (MySQLdb.Warning, MySQLdb.IntegrityError), e:
                         # If nulling failed, let's delete problematic rows
                         self._logger.qs = "DELETE FROM `%(child)s` WHERE not exists (select * from `%(parent)s` p where p.`%(parent_col)s`=`%(child)s`.`%(child_col)s` limit 1)" % params
+                        print(self._logger.qs)
                         cur.execute(self._logger.qs)
                 except Exception, e:
                     handle_exception(
