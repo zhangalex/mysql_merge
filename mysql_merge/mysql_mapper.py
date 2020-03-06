@@ -185,7 +185,8 @@ class Mapper(object):
 
             table_name = data.values()[0]
 
-            self._logger.qs = "SHOW INDEXES FROM %s" % table_name
+            self._logger.qs = "SHOW INDEXES FROM `%s`" % table_name
+            print(self._logger.qs)
             index_cur.execute(self._logger.qs)
 
             while True:

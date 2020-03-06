@@ -75,9 +75,13 @@ def map_fks(db_map, force_input=True):
     local_ignore_unlisted = False
     processed_colstrings = []
     remembered_choices = {}
+    parent = ''
+    parent_col = ''
 
     for table_name, table_map in db_map.items():
         for col_name, col_data in table_map['fk_maybe'].items():
+            global parent
+            global parent_col
             col_string = '%s.%s' % (table_name, col_name)
 
             # Make sure we're not forcing a duplicate entry

@@ -60,7 +60,7 @@ class Merger(object):
     def prepare_db(self):
         cur = self._cursor
 
-        self._logger.qs = "set names utf8"
+        self._logger.qs = "set names UTF8MB4"
         cur.execute(self._logger.qs)
 
         warnings.filterwarnings('error', category=MySQLdb.Warning)
