@@ -49,9 +49,9 @@ common_data = {
   instead of setting to null or deleting.
 """
 orphaned_rows_update_values = {
-  #'columns': {
+  'columns': {
   #  'user_id': 1
-  #}
+  }
 }
 
 """
